@@ -47,61 +47,62 @@ class GUI(tk.Tk):
 
         # Create 'add inventory' button widget
         self.add_inventory_btn = tk.Button(self, text="Add inventory", font=button_text, command=lambda:self.add_inventory_clicked(config.inventories))
-        self.add_inventory_btn.place(relx=0.04, rely= 0.12, relwidth=0.26)
+        self.add_inventory_btn.place(relx=0.04, rely= 0.10, relwidth=0.26)
 
         # Create 'Remove inventory' button widget
         self.remove_inventory_btn = tk.Button(self, text="Remove inventory", font=button_text, command=lambda:self.remove_inventory_clicked(config.inventories))
-        self.remove_inventory_btn.place(relx=0.04, rely=0.21, relwidth=0.262)
+        self.remove_inventory_btn.place(relx=0.04, rely=0.19, relwidth=0.262)
 
         # Create 'Display inventory' button widget
         self.display_inventory_btn = tk.Button(self, text="Display inventory", font=button_text, command=lambda:self.display_inventory_clicked(config.inventories))
-        self.display_inventory_btn.place(relx=0.04, rely = 0.30, relwidth=0.262)
+        self.display_inventory_btn.place(relx=0.04, rely = 0.28, relwidth=0.262)
 
         # Create 'add item' button widget
         self.add_item_btn = tk.Button(self, text='Add item to inventory', font=button_text, command=lambda: self.add_item_clicked(config.inventories))
-        self.add_item_btn.place(relx=0.369, rely=0.57, relwidth=0.262)
+        self.add_item_btn.place(relx=0.369, rely=0.37, relwidth=0.262)
 
         # Create 'remove item' button widget
         self.remove_item_btn = tk.Button(self, text='Remove item from inventory', font=button_text, command=lambda: self.remove_item_clicked(config.inventories))
-        self.remove_item_btn.place(relx=0.369, rely=0.66, relwidth=0.262)
+        self.remove_item_btn.place(relx=0.369, rely=0.43, relwidth=0.262)
 
         # Create 'display all' button widget
         self.display_all_btn = tk.Button(self, text="Display all", font = button_text, command=lambda: self.display_all_clicked(config.inventories))
-        self.display_all_btn.place(relx=0.04, rely=0.57, relwidth=0.262)
+        self.display_all_btn.place(relx=0.04, rely=0.49, relwidth=0.262)
 
         # Create 'remove all' button widget
         self.remove_all_btn = tk.Button(self, text="Remove all", font = button_text, command=lambda: self.remove_all_clicked(config.inventories))
-        self.remove_all_btn.place(relx= 0.04, rely = 0.1, relwidth=0.262)
+        self.remove_all_btn.place(relx= 0.04, rely = 0.58, relwidth=0.262)
 
         # Create 'logout button' and add to UI 
-        self.logout_btn = tk.Button(self, text="Logout", font=button_text, command=self.logout).place(relx=0, rely=0)
+        self.logout_btn = tk.Button(self, text="Logout", font=button_text, command=self.logout)
+        self.logout_btn.place(relx=0.85, rely=0.95, relwidth=0.14)
 
         # Create inventories name label and entry for add inventory, remove inventory and display inventory functions
         self.inventories_name_entry_label = tk.Label(self, text="Inventory name:", font=button_text)
-        self.inventories_name_entry_label.place(relx=0.02, rely=0.44, relwidth=0.12)
+        self.inventories_name_entry_label.place(relx=0.02, rely=0.39, relwidth=0.12)
 
         # Create inventories name entry for add inventory, remove inventory, and display inventory
         self.inventories_name_entry = tk.Entry(self, textvariable=self.inventories_name_entry_string, justify="center")
-        self.inventories_name_entry.place(relx=0.15, rely=0.45, relwidth=0.16)
+        self.inventories_name_entry.place(relx=0.15, rely=0.385, relwidth=0.16)
 
         ### Create item add/remove boxes (This includes inventory name, item name and quantity)
         # Create inventory name entry and label 
         self.inventory_name_entry_label = tk.Label(self, text="Inventory name:", font=button_text, justify="right")
-        self.inventory_name_entry_label.place(relx=0.35, rely=0.25, relwidth=0.12)
+        self.inventory_name_entry_label.place(relx=0.35, rely=0.19, relwidth=0.12)
         self.inventory_name_entry = tk.Entry(self, textvariable=self.inv_name, font=button_text)
-        self.inventory_name_entry.place(relx=0.46, rely=0.25, relwidth=0.17)
+        self.inventory_name_entry.place(relx=0.46, rely=0.19, relwidth=0.17)
 
         # Create item name entry and label 
         self.item_name_entry_label = tk.Label(self, text="Item name:", font=button_text, justify="right")
-        self.item_name_entry_label.place(relx=0.35, rely=0.30, relwidth=0.12)
+        self.item_name_entry_label.place(relx=0.35, rely=0.24, relwidth=0.12)
         self.item_name_entry = tk.Entry(self, textvariable=self.itm_name, font=button_text)
-        self.item_name_entry.place(relx=0.46, rely=0.30, relwidth=0.17)
+        self.item_name_entry.place(relx=0.46, rely=0.24, relwidth=0.17)
 
         # Create quantity entry and label
         self.quantity_entry_label = tk.Label(self, text="Quantity:", font=button_text, justify="right")
-        self.quantity_entry_label.place(relx=0.35, rely=0.35, relwidth=0.12)
+        self.quantity_entry_label.place(relx=0.35, rely=0.29, relwidth=0.12)
         self.quantity_entry = tk.Entry(self, textvariable=self.enter_quantity, font=button_text)
-        self.quantity_entry.place(relx=0.46, rely=0.35, relwidth=0.17)
+        self.quantity_entry.place(relx=0.46, rely=0.29, relwidth=0.17)
 
         # Create Scrolling text box for execution messages
         self.execution_note_box = scrolledtext.ScrolledText(self,wrap=tk.WORD,width=40,height=10)
@@ -120,7 +121,7 @@ class GUI(tk.Tk):
         # Create Scrolling text box for displaying inventories
         self.inventory_box = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=10, height=40)
         self.inventory_box.configure(state ='disabled')
-        self.inventory_box.place(relx=0.67, rely=0.09, relwidth=0.33, relheight=0.9)
+        self.inventory_box.place(relx=0.67, rely=0.09, relwidth=0.33, relheight=0.85)
         # Set focus to the text area 
         self.inventory_box.focus()
 
