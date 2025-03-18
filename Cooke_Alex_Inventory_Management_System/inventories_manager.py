@@ -70,7 +70,7 @@ class inventories_manager:
                     self.interface.inventory_box.insert(tk.END, "\t- " + key + ":" + str(inventory[key]) + '\n')
 
     def remove_all(self, inventories):
-        inventories = {}
+        config.inventories = {}
         self.interface.inventory_box.insert(tk.END, "EMPTY\n")
 
     def add_item(self, item_flag, item_attr):
