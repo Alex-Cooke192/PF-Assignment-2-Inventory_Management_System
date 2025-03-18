@@ -13,7 +13,7 @@ class GUI(tk.Tk):
         super().__init__()
         # Set up main application window
         self.title("Inventory Management System")
-        self.geometry("1000x666")
+        self.geometry("1200x800")
 
         self.app_manager = peripheral_manager
         self.manager = brain
@@ -75,7 +75,7 @@ class GUI(tk.Tk):
 
         # Create 'logout button' and add to UI 
         self.logout_btn = tk.Button(self, text="Logout", font=button_text, command=self.logout)
-        self.logout_btn.place(relx=0.85, rely=0.95, relwidth=0.14)
+        self.logout_btn.place(relx=0.85, rely=0.965, relwidth=0.14)
 
         # Create inventories name label and entry for add inventory, remove inventory and display inventory functions
         self.inventories_name_entry_label = tk.Label(self, text="Inventory name:", font=button_text)
@@ -121,7 +121,7 @@ class GUI(tk.Tk):
         # Create Scrolling text box for displaying inventories
         self.inventory_box = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=10, height=40)
         self.inventory_box.configure(state ='disabled')
-        self.inventory_box.place(relx=0.67, rely=0.09, relwidth=0.33, relheight=0.85)
+        self.inventory_box.place(relx=0.67, rely=0.09, relwidth=0.33, relheight=0.87)
         # Set focus to the text area 
         self.inventory_box.focus()
 
@@ -208,4 +208,7 @@ class GUI(tk.Tk):
                 self.execution_note_box.configure(state="disabled")
 
 # =======================================================================================================================
+
+
+
 
