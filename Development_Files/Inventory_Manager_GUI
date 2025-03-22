@@ -1,0 +1,170 @@
+# Inventory Management GUI 
+# 22.02.2025
+ 
+import tkinter as tk
+import time
+from tkinter import messagebox
+from tkinter import PhotoImage
+from tkinter import scrolledtext
+ 
+from datetime import datetime
+ 
+inventories = {'office 1': {'apple': '3', 'banana': '2'}}
+ 
+# ===============================================================================================================================
+ 
+class GUI(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        # Set up main application window
+        self.title("Inventory Management System")
+        self.geometry("1000x666")
+
+        # Read BAE logo image and format to the right size
+        self.BAES_logo = PhotoImage(file="C:/Users/alexa/OneDrive/Documents/B&FC Year 1/Programming Fundamentals/Assignment 2 inventory management system/bae-systems-logo.png")
+        self.BAES_logo = self.BAES_logo.subsample(4,4)
+
+        # Create label to display BAE logo & add to GUI 
+        self.BAE_logo_label = tk.Label(self, image=self.BAES_logo).place(x = 800, y = 0)
+
+        # Create title label widget
+        self.label = tk.Label(self, text="Inventory Management System", font=("Helvetica", 16))
+        self.label.pack(pady=30)
+
+        # Create add inventory button widget
+        self.add_inventory_btn = tk.Button(self, text="Add inventory", command=lambda:self.add_inventory_clicked(inventories))
+        self.add_inventory_btn.pack()
+ 
+        # Create 'delete inventory' button widget
+        self.remove_inventory_btn = tk.Button(self, text="Remove inventory", command=lambda:self.remove_inventory_clicked(inventories))
+        self.remove_inventory_btn.pack()
+ 
+        # Create 'Display inventory' button widget
+        self.display_inventory_btn = tk.Button(self, text="Display inventory", command=lambda:self.display_inventory_clicked(inventories))
+        self.display_inventory_btn.pack()
+ 
+         # Create 'add item' button widget
+         self.add_item_btn = tk.Button(self, text='Add item to inventory', command=lambda: self.add_item_clicked(inventories))
+         self.add_item_btn.pack()
+ 
+         # Create 'remove item' button widget
+         self.remove_item_btn = tk.Button(self, text='Remove item from inventory', command=lambda: self.remove_item_clicked(inventories))
+         self.remove_item_btn.pack()
+ 
+         # Create 'logout button' and add to UI 
+         self.logout_btn = tk.Button(self, text="Logout", command=self.logout).place(x=750, y = 600)
+ 
+         # Create Scrolling text box for execution messages
+         self.execution_note_box = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=40, height=10)
+         self.execution_note_box.pack(padx=10, pady=10)
+         # Set focus to the text area
+         self.execution_note_box.focus()
+ 
+         # Create Scrolling text box for displaying inventories
+         self.inventory_box = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=70, height=40)
+         self.inventory_box.pack(padx=10, pady=10)
+         # Set focus to the text area 
+         self.inventory_box.focus()
+ 
+ # ============================================================================================================================
+ 
+     def logout(self):
+         # Close the application window 
+         response = messagebox.askyesno("Logout", "Are you sure you want to logout?")
+         if response:
+             self.destroy() 
+     
+     def add_inventory_clicked(self, inventories):
+         name_screen = fetch_inventory_name(purpose='add')
+         # Call add inventory function
+         self.execution_note(function_name="\'Add inventory\'")
+ 
+     def remove_inventory_clicked(self, inventories):
+         name_screen = fetch_inventory_name(purpose='remove')
+         # Call remove inventory function
+         self.execution_note(function_name="\'Remove inventory\'")
+ 
+     def display_inventory_clicked(self, inventories):
+         name_screen = fetch_inventory_name(purpose='display')
+         # Call display inventory function
+         self.execution_note(function_name="\'Display inventory\'")
+     
+     def add_item_clicked(self, inventories):
+         name_screen = fetch_item_name(purpose='add')
+         self.execution_note(function_name='"\'Add item\'"')
+ 
+     def remove_item_clicked(self, inventories):
+         name_screen = fetch_item_name(purpose='remove')
+         self.execution_note(function_name="\'Remove item\'")
+ 
+     def execution_note(self, function_name):
+         self.execution_note_box.insert(tk.END, "\nFunction:" + function_name + "successfully executed.\n")
+ 
+ # =======================================================================================================================
+ 
+ class fetch_inventory_name(tk.Tk):
+     def __init__(self, purpose):
+         super().__init__()
+         # Make storage area for inventory name
+         self.inv_name = tk.StringVar()
+         # initialise the screen
+         self.title('Enter Inventory name')
+         self.geometry("300x200")
+ 
+         # Add label for purpose of asking for name (i.e. is it to add/remove/display inventory)
+         self.purpose_label = tk.Label(self, text="Enter name of inventory to " + purpose, font=("Helvetica", 13))
+         self.purpose_label.pack()
+ 
+         # Add entry for inventory name
+         self.name_entry = tk.Entry(self, textvariable=self.inv_name, font=("Comic Sans", 13))
+         self.name_entry.pack(fill='x', expand=True)
+         self.name_entry.focus()
+ 
+         # submit button
+         self.submit_button = tk.Button(self, text = "submit", command = lambda:self.submit_name()).pack()
+ 
+ # ======================================================================================================
+     
+     def submit_name(self):
+         global inventory_name
+         inventory_name=self.name_entry.get()
+         self.inv_name.set("")
+         print("The name is: " + inventory_name)
+         self.destroy()
+ 
+ # ======================================================================================================
+     
+ class fetch_item_name(tk.Tk):
+     def __init__(self, purpose):
+         super().__init__()
+         # Make storage area for item name
+         self.item_name = tk.StringVar()
+         # initialise the screen
+         self.title('Enter Item name')
+         self.geometry("300x200")
+ 
+         # Add label for purpose of asking for name (i.e. is it to add/remove/display inventory)
+         self.purpose_label = tk.Label(self, text="Enter name of item to " + purpose, font=("Helvetica", 13))
+         self.purpose_label.pack()
+ 
+         # Add entry for inventory name
+         self.name_entry = tk.Entry(self, textvariable=self.item_name, font=("Comic Sans", 13))
+         self.name_entry.pack(fill='x', expand=True)
+         self.name_entry.focus()
+ 
+         # submit button
+         self.submit_button = tk.Button(self, text = "submit", command = lambda:self.submit_name()).pack()
+     
+ # ======================================================================================================
+ 
+     def submit_name(self):
+         global item_name
+         item_name=self.name_entry.get()
+         self.item_name.set("")
+         print("The item is: " + item_name)
+         self.destroy()
+ # =======================================================================================================
+     
+ # Run the application
+ interface = GUI()
+ interface.mainloop()
