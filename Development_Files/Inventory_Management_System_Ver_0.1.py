@@ -44,6 +44,20 @@ class inventories_manager:
         self.counter = 0 # tracks how many inventories are active in the dictionary
     
     def add_inventory(self, inventories):
+        inventory_name = tk.StringVar()
+        # initialise the screen
+        name_popup = tk.Tk()
+        name_popup.title('Enter Inventory name')
+        name_popup.geometry("300x200")
+
+        # Add entry for inventory name
+        name_entry = tk.Entry(name_popup, textvariable=inventory_name)
+        name_entry.pack(fill='x', expand=True)
+        name_entry.focus()
+
+        # submit button
+        submit_button = tk.Button(name_popup, text = "submit", command = name_popup.destroy).pack()
+
         self.counter += 1
         inventory_name = input("Inventory name: ").strip()
         # Validate name exists
