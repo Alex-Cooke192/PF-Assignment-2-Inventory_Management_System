@@ -195,8 +195,8 @@ class GUI(tk.Tk):
 
         # Read BAE logo image and format to the right size
         directory = os.getcwd()
-        for images in os.listdir(os.getcwd()):
-            self.BAES_logo = PhotoImage(file="./BAE_Systems_logo.png")
+        image_path = (f'{directory}/BAE_Systems_logo.png')
+        self.BAES_logo = PhotoImage(file=image_path)
         self.BAES_logo = self.BAES_logo.subsample(3,4)
 
         # Create label to display BAE logo & add to GUI 
