@@ -103,75 +103,85 @@ class inventories_manager:
                     return 0 
 
 def logout():
+    # Close the application window 
     response = messagebox.askyesno("Logout", "Are you sure you want to logout?")
     if response:
-        root.destroy()  # Close the application window
+        root.destroy() 
     # write relevant text to file # Destroy GUI
                 
 manager = inventories_manager()
 inventories = {}
 
-### GUI Functions
-# Create the main window
-root = tk.Tk()
-root.title("Inventory Management System")
-root.geometry("1000x666")
+class GUI:
+    def __init__(self):
+        ### GUI Functions
+        # Create the main window
+        root = tk.Tk()
+        root.title("Inventory Management System")
+        root.geometry("1000x666")
 
-# Delare string variable for storing name of inventory to add
-inventory_name = tk.StringVar()
+        # Read BAE logo image and format to the right size
+        BAES_logo = PhotoImage(file="C:/Users/alexa/OneDrive/Documents/B&FC Year 1/Programming Fundamentals/Assignment 2 inventory management system/bae-systems-logo.png")
+        BAES_logo = BAES_logo.subsample(4,4)
 
-# Create a label widget
-label = tk.Label(root, text="Inventory Management System", font=("Arial", 14))
-label.pack(pady=20)
+        # Create label to display BAE logo & add to GUI 
+        BAE_logo_label = tk.Label(root, image=BAES_logo).pack(side='right')
 
-# Create 'add inventory' button 
-add_inventory_button = tk.Button(root, 
-                    text="Add Inventory", 
-                    command=lambda: manager.add_inventory(inventories)).place(x=30, y=80)
+        # Delare string variable for storing name of inventory to add
+        inventory_name = tk.StringVar()
 
-# Add box to enter inventory names
-name_label = tk.Label(root, text='Inventory Name', font=("Arial", 10))
+        # Create a label widget
+        label = tk.Label(root, text="Inventory Management System", font=("Arial", 14))
+        label.pack(pady=20)
 
-name_entry = tk.Entry(root, 
-                      textvariable = inventory_name)
-name_label.place(x=70, y=80)
-name_entry.place(x=80, y=100)
+        # Create 'add inventory' button 
+        add_inventory_button = tk.Button(root,    
+                                        text="Add Inventory", 
+                                        command=lambda: manager.add_inventory(inventories)).place(x=30, y=80)
 
-# Remove inventory button
-remove_inventory_button = tk.Button(root, 
-                   text="Delete Inventory",
-                   command=lambda: manager.delete_inventory(inventories)).place(x=30, y=120)
+        # Create 'Remove inventory' button
+        remove_inventory_button = tk.Button(root, 
+                                            text="Delete Inventory",
+                                            command=lambda: manager.delete_inventory(inventories)).place(x=30, y=120)
+        
+        # Create 'display inventory' button
+        display_inventory_button = tk.Button(root, 
+                                            text="Display Inventory",
+                                            command=lambda: manager.display_inventory(inventories)).place(x=30, y=160)
 
-# Read BAE logo image and format to the right size
-BAES_logo = PhotoImage(file="C:/Users/alexa/OneDrive/Documents/B&FC Year 1/Programming Fundamentals/Assignment 2 inventory management system/bae-systems-logo.png")
-BAES_logo = BAES_logo.subsample(4,4)
 
-# Create label to display BAE logo & add to GUI 
-BAE_logo_label = tk.Label(root, image=BAES_logo).place(x = 750, y = 0)
+        # Create 'logout' button & add to GUI 
+        logout_button = tk.Button(root, text = 'Logout', command = logout).place(x = 800, y= 600)
 
-# Create 'logout' button & add to GUI 
-logout_button = tk.Button(root, text = 'Logout', command = logout).place(x = 800, y= 600)
+        # Start the Tkinter event loop
+        root.mainloop()
 
 def enter_inventory_name_screen():
-    inventory_name = tk.StringVar()
+    # Make storage area for inventory name
+    inv_name = tk.StringVar()
     # initialise the screen
     name_popup = tk.Tk()
     name_popup.title('Enter Inventory name')
     name_popup.geometry("300x200")
 
     # Add entry for inventory name
-    name_entry = tk.Entry(name_popup, textvariable=inventory_name)
+    name_entry = tk.Entry(name_popup, textvariable=inv_name)
     name_entry.pack(fill='x', expand=True)
     name_entry.focus()
 
     # submit button
-    submit_button = tk.Button(name_popup, text = "submit", command = name_popup.destroy)
+    submit_button = tk.Button(name_popup, text = "submit", command = lambda: submit_name())
 
-def submit_clicked():
-    pass
+def submit_name(inv_name, name_popup):
+    inventory_name=inv_name.get()
+    print("The name is : " + inventory_name)
+    inv_name.set("")
+    name_popup.destroy
+    return inventory_name
 
-# Start the Tkinter event loop
-root.mainloop()
+# Make an object of the UI screen
+interface = GUI()
+
 
 # Just an idea: 
 # def validate_inventory_name():
@@ -201,7 +211,6 @@ def main():
             except ValueError:
                 check_flag = False 
                 print('Data not of valid type, enter again.')
-                option = int(input('Enter option num:'))
             # if option != 1 and option != 2 and option != 3 and option != 4 and option != 5 and option != 6 and option != 7:
             if option < 1 and option > 7: 
                 check_flag = False
