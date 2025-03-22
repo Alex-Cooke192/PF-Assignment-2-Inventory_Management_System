@@ -2,10 +2,10 @@
 # 12.02.2025
 
 import tkinter as tk
-import Pillow
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import PhotoImage
+from tkinter import messagebox
 
 with open("inventoryFile.txt", "w") as file:
     file.write('text')
@@ -87,6 +87,12 @@ class inventories_manager:
                 if inventory_name == 'Stop': 
                     search = True
                     return 0 
+
+def logout():
+    response = messagebox.askyesno("Logout", "Are you sure you want to logout?")
+    if response:
+        root.destroy()  # Close the application window
+    # write relevant text to file # Destroy GUI
                 
 manager = inventories_manager()
 inventories = {}
@@ -94,8 +100,8 @@ inventories = {}
 ### GUI Functions
 # Create the main window
 root = tk.Tk()
-root.title("OInventory Management System")
-root.geometry("1500x1000")
+root.title("Inventory Management System")
+root.geometry("1000x666")
 
 # Delare string variable for storing name of inventory to add
 inventory_name = tk.StringVar()
@@ -107,9 +113,7 @@ label.pack(pady=20)
 # Create 'add inventory' button 
 add_inventory_button = tk.Button(root, 
                     text="Add Inventory", 
-                    command=lambda: manager.add_inventory(inventories))
-add_inventory_button.pack(padx=20)
-add_inventory_button.place(x=30, y=80)#
+                    command=lambda: manager.add_inventory(inventories)).place(x=30, y=80)
 
 # Add box to enter inventory names
 name_label = tk.Label(root, text='Inventory Name', font=("Arial", 10))
@@ -122,22 +126,42 @@ name_entry.place(x=80, y=100)
 # Remove inventory button
 remove_inventory_button = tk.Button(root, 
                    text="Delete Inventory",
-                   command=lambda: manager.delete_inventory(inventories))
-remove_inventory_button.pack(padx=20)
-remove_inventory_button.place(x=30, y=120)
+                   command=lambda: manager.delete_inventory(inventories)).place(x=30, y=120)
 
-# Add BAE logo to the UI
+# Read BAE logo image and format to the right size
 BAES_logo = PhotoImage(file="C:/Users/alexa/OneDrive/Documents/B&FC Year 1/Programming Fundamentals/Assignment 2 inventory management system/bae-systems-logo.png")
-BAES_logo = BAES_logo.resize((150, 40))
+BAES_logo = BAES_logo.subsample(4,4)
 
-# Create label to display BAE logo
-BAE_logo_label = tk.Label(root, image=BAES_logo).place(x=450, y=0)
+# Create label to display BAE logo & add to GUI 
+BAE_logo_label = tk.Label(root, image=BAES_logo).place(x = 750, y = 0)
+
+# Create 'logout' button & add to GUI 
+logout_button = tk.Button(root, text = 'Logout', command = logout).place(x = 800, y= 600)
+
+def enter_inventory_name_screen():
+    inventory_name = tk.StringVar()
+    # initialise the screen
+    name_popup = tk.Tk()
+    name_popup.title('Enter Inventory name')
+    name_popup.geometry("300x200")
+
+    # Add entry for inventory name
+    name_entry = tk.Entry(name_popup, textvariable=inventory_name)
+    name_entry.pack(fill='x', expand=True)
+    name_entry.focus()
+
+    # submit button
+    submit_button = tk.Button(name_popup, text = "submit", command = name_popup.destroy)
+
+def submit_clicked():
+    pass
 
 # Start the Tkinter event loop
 root.mainloop()
 
 # Just an idea: 
 # def validate_inventory_name():
+
        
 def main():
     ## file = open("inventoryFile.txt", "r")
