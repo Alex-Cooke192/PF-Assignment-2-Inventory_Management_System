@@ -4,10 +4,11 @@
 import tkinter as tk
 from tkinter import messagebox, PhotoImage, scrolledtext, font
 import time
+import os
 
 from datetime import datetime
 
-inventories = {'office 1': {'apple': '3', 'banana': '2'}}
+inventories = {'office 1': {'apple': 3, 'banana': 2}}
 inventory_name = ''# Stores current active inventory/the one being edited
 
 class Asset: 
@@ -84,6 +85,7 @@ class inventories_manager:
             interface.inventory_box.configure(state="normal")
             interface.inventory_box.insert(tk.END, "--------------------------------------")
             interface.inventory_box.insert(tk.END, "\n" + inventory_name + "\n \n")
+            print('hfhwrbwfe', inventory_name)
             for key, value in inventories[inventory_name].items():
                 interface.inventory_box.insert(tk.END, key + ": " + value + "\n")
             interface.inventory_box.insert(tk.END, "--------------------------------------\n")
@@ -99,45 +101,36 @@ class inventories_manager:
                 interface.inventory_box.insert(tk.END, name + ":\n")
                 # print("\ninventory:", name)
                 for key in inventory:
-                    interface.inventory_box.insert(tk.END, "\t- " + key + ":" + inventory[key] + '\n')
+                    interface.inventory_box.insert(tk.END, "\t- " + key + ":" + str(inventory[key]) + '\n')
 
-    def add_item(self, inventory_name, inventories):
-        # Adds new item to a given inventory
-        new_item_name = input('Enter name of item to add: ').strip()
-        quantity = int(input('Enter quantity of item: '))
-        # Check if item already exists
-        for key in inventories[inventory_name]:
-            if key == new_item_name:
-                # Item already exists in that inventory
-                print('Item already exists in that inventory, edit quantity instead?')
-
-        inventories[inventory_name][new_item_name] = quantity 
-        print(inventories)
+    def add_item(self, item_flag, item_attr):
+        inventory_name = item_attr[0]
+        item_name = item_attr[1]
+        quantity = item_attr[2]
+        if item_flag == 0: # Inventory name doesnt exist so cannot be added 
+            interface.execution_note(function_name="\'Add item\'", execution_flag=False)
+        elif item_flag == 10: # Inventory exists but item doesnt so add new item to list 
+            interface.execution_note(function_name="\'Add item\'", execution_flag=True)
+            inventories[inventory_name][item_name] = quantity 
+        elif item_flag == 11: # Inventory exists and item already exists so edit quantity
+            interface.execution_note(function_name="\'Add item\'", execution_flag=True)
+            inventories[inventory_name][item_name] += quantity 
     
-    def remove_item(self, inventory_name, inventories):
-        # This function removes an item from a given inventory
-        # Get item name & verify it exists in the given inventory
-        item_flag = False 
-        while item_flag == False:
-            item_name = input('Enter name of item to remove: ').strip()
-            for key in inventories[inventory_name]:
-                if key == item_name:
-                    # Item exists in that inventory
-                    item_flag = True
-            if item_flag == False:
-                # Item not present in inventory
-                print('Item not present')
-        del inventories[inventory_name][item_name]
-        print(inventories)
-
-    def edit_quantity(self, inventory_name, inventories):
-        pass
-        # Validate item exists in inventory
-        #### inventories[inventory_name][new_item_name] = quantity 
+    def remove_item(self, item_flag, item_attr):
+        inventory_name = item_attr[0]
+        item_name = item_attr[1]
+        quantity = item_attr[2]
+        if item_flag == 0: # Inventory name doesnt exist so cannot be added 
+            interface.execution_note(function_name="\'Remove item\'", execution_flag=False)
+        elif item_flag == 10: # Inventory exists but item doesnt so cannot be removed
+            interface.execution_note(function_name="\'Remove item\'", execution_flag=False)
+        elif item_flag == 11: # Inventory exists and item exists so can be removed
+            interface.execution_note(function_name="\'Remove item\'", execution_flag=True)
+            inventories[inventory_name][item_name] -= quantity 
                 
 manager = inventories_manager()
 
-def validate_inventory_name(inventory_name, inventories):
+def validate_inventory(inventory_name, inventories):
     # Function checks the 'inventories' dictionary to see if the dicntionary exists
     # If function returns true, name already exists, 
     # if it returns false, name doesnt exist
@@ -154,6 +147,30 @@ def validate_inventory_name(inventory_name, inventories):
         print('Name does exist')
         return 1
 
+def validate_item(item_attr):
+    name_check = False 
+    for key, value in inventories.items():
+        if key == item_attr[0]: # Item_attr[0] is inventory name
+            name_check = True 
+    if name_check == False:
+        # Name doesnt exist
+        print('Name doesnt exist')
+        return 0
+    elif name_check == True:
+        item_check = False
+        # Inventory name does exist
+        print('Name does exist')
+        ### Validate item name 
+        for key in inventories[item_attr[0]]: 
+            if key == item_attr[1]: # item_attr[1] is the item name
+                item_check = True 
+        if item_check == True:
+            # Item already exists - edit quantity
+            return 11
+        elif item_check == False: 
+            # Item doesn't exist 
+            return 10
+
 # ===============================================================================================================================
 
 class GUI(tk.Tk):
@@ -165,13 +182,21 @@ class GUI(tk.Tk):
 
         title_font = font.Font(weight="bold", size=16, family="Comic Sans MS")
 
+        # Initialise memeory space for entry boxes
+        self.inventories_name_entry_string = tk.StringVar()
+        self.inv_name = tk.StringVar()
+        self.itm_name = tk.StringVar()
+        self.enter_quantity = tk.IntVar()
+
         # Create title label widget
         self.label = tk.Label(self, text="Inventory Management System", font=title_font)
         self.label.place(relx=0.34, rely=0, relwidth=0.33, relheight=0.1)
         ### self.label.pack(pady=30, anchor=tk.N)
 
         # Read BAE logo image and format to the right size
-        self.BAES_logo = PhotoImage(file="C:/Users/alexa/OneDrive/Documents/B&FC Year 1/Programming Fundamentals/Assignment 2 inventory management system/bae-systems-logo.png")
+        directory = os.getcwd()
+        for images in os.listdir(os.getcwd()):
+            self.BAES_logo = PhotoImage(file="./BAE_Systems_logo.png")
         self.BAES_logo = self.BAES_logo.subsample(3,4)
 
         # Create label to display BAE logo & add to GUI 
@@ -194,11 +219,11 @@ class GUI(tk.Tk):
 
         # Create 'add item' button widget
         self.add_item_btn = tk.Button(self, text='Add item to inventory', font=button_text, command=lambda: self.add_item_clicked(inventories))
-        self.add_item_btn.place(relx=0.04, rely=0.39, relwidth=0.262)
+        self.add_item_btn.place(relx=0.369, rely=0.57, relwidth=0.262)
 
         # Create 'remove item' button widget
         self.remove_item_btn = tk.Button(self, text='Remove item from inventory', font=button_text, command=lambda: self.remove_item_clicked(inventories))
-        self.remove_item_btn.place(relx=0.04, rely=0.48, relwidth=0.262)
+        self.remove_item_btn.place(relx=0.369, rely=0.66, relwidth=0.262)
 
         # Create 'display all' button widget
         self.display_all_btn = tk.Button(self, text="Display all", font = button_text, command=lambda: self.display_all_clicked(inventories))
@@ -206,6 +231,33 @@ class GUI(tk.Tk):
 
         # Create 'logout button' and add to UI 
         self.logout_btn = tk.Button(self, text="Logout", font=button_text, command=self.logout).place(relx=0, rely=0)
+
+        # Create inventories name label and entry for add inventory, remove inventory and display inventory functions
+        self.inventories_name_entry_label = tk.Label(self, text="Inventory name:", font=button_text)
+        self.inventories_name_entry_label.place(relx=0.02, rely=0.51, relwidth=0.12)
+
+        # Create inventories name entry for add inventory, remove inventory, and display inventory
+        self.inventories_name_entry = tk.Entry(self, textvariable=self.inventories_name_entry_string, justify="center")
+        self.inventories_name_entry.place(relx=0.15, rely=0.51, relwidth=0.16)
+
+        ### Create item add/remove boxes (This includes inventory name, item name and quantity)
+        # Create inventory name entry and label 
+        self.inventory_name_entry_label = tk.Label(self, text="Inventory name:", font=button_text, justify="right")
+        self.inventory_name_entry_label.place(relx=0.35, rely=0.25, relwidth=0.12)
+        self.inventory_name_entry = tk.Entry(self, textvariable=self.inv_name, font=button_text)
+        self.inventory_name_entry.place(relx=0.46, rely=0.25, relwidth=0.17)
+
+        # Create item name entry and label 
+        self.item_name_entry_label = tk.Label(self, text="Item name:", font=button_text, justify="right")
+        self.item_name_entry_label.place(relx=0.35, rely=0.30, relwidth=0.12)
+        self.item_name_entry = tk.Entry(self, textvariable=self.itm_name, font=button_text)
+        self.item_name_entry.place(relx=0.46, rely=0.30, relwidth=0.17)
+
+        # Create quantity entry and label
+        self.quantity_entry_label = tk.Label(self, text="Quantity:", font=button_text, justify="right")
+        self.quantity_entry_label.place(relx=0.35, rely=0.35, relwidth=0.12)
+        self.quantity_entry = tk.Entry(self, textvariable=self.enter_quantity, font=button_text)
+        self.quantity_entry.place(relx=0.46, rely=0.35, relwidth=0.17)
 
         # Create Scrolling text box for execution messages
         self.execution_note_box = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=40, height=10)
@@ -238,20 +290,24 @@ class GUI(tk.Tk):
             self.destroy() 
     
     def add_inventory_clicked(self, inventories):
-        # Get inventory name to add
-        inventory_name = fetch_inventory_name(purpose='add')
-        # self.execution_note(function_name="\'Add inventory\'")
-        print(inventories)
+        inventories_name = fetch_inventory() # Get inventory name to add from entry 
+        # Validate inventory name
+        inventories_flag = validate_inventory(inventories_name, inventories)
+        manager.add_inventory(inventories, inventories_name, inventories_flag)
 
     def remove_inventory_clicked(self, inventories):
-        # Get inventory name to add
-        inventory_name = fetch_inventory_name(purpose='remove')
-        # self.execution_note(function_name="\'Remove inventory\'", execution_flag=True)
+        # Get inventory name from entry
+        inventories_name = fetch_inventory()  
+        # Validate inventory name 
+        inventories_flag = validate_inventory(inventories_name, inventories)
+        manager.remove_inventory(inventories, inventories_name, inventories_flag)
 
     def display_inventory_clicked(self, inventories):
-        name_screen = fetch_inventory_name(purpose='display')
-        # self.print_inventory(inventory_name, inventories)
-        # self.execution_note(function_name="\'Display inventory\'")
+        # Get inventory name from entry 
+        inventories_name = fetch_inventory() 
+        # Validate inventory name
+        inventories_flag = validate_inventory(inventories_name, inventories)
+        manager.display_inventory(inventories, inventories_name, inventories_flag)
 
     def display_all_clicked(self, inventories):
         self.inventory_box.configure(state="normal")
@@ -260,12 +316,14 @@ class GUI(tk.Tk):
         self.execution_note(function_name="\'Display all\'", execution_flag=True)
     
     def add_item_clicked(self, inventories):
-        item_screen = fetch_item_name(purpose='add')
-        # self.execution_note(function_name="\'Add item\'", execution_flag=True)
+        item_attr = fetch_item()
+        item_flag = validate_item(item_attr)
+        manager.add_item(item_flag, item_attr)
 
     def remove_item_clicked(self, inventories):
-        name_screen = fetch_item_name(purpose='remove')
-        self.execution_note(function_name="\'Remove item\'")
+        item_attr = fetch_item()
+        item_flag = validate_item(item_attr)
+        manager.remove_item(item_flag, item_attr)
 
     def execution_note(self, function_name, execution_flag):
         # Displays execution note in execution note box, depending on 
@@ -284,32 +342,22 @@ class GUI(tk.Tk):
             self.execution_note_box.insert(tk.END,"==================================================\n")
             self.execution_note_box.configure(state = "disabled")
             # Print reason for failure - depends on the function being executed
-            if function_name == 'add':
+            if function_name == "\'Add inventory\'":
                 interface.execution_note_box.configure(state = "normal") # Open execution box - can be written to
                 interface.execution_note_box.insert(tk.END, "\nInventory already exists")
                 interface.execution_note_box.configure(state="disabled") # Close execution box - READ ONLY MODE
-            elif function_name == 'remove':
+            elif function_name == "\'Remove inventory\'":
                 interface.execution_note_box.configure(state="normal")
                 interface.execution_note_box.insert(tk.END, "\nInventory does not exist\n")
                 interface.execution_note_box.configure(state="disabled")
-            elif function_name == 'display':
+            elif function_name == "\'Display inventory\'":
                 interface.execution_note_box.configure(state="normal")
                 interface.execution_note_box.insert(tk.END, "\nInventory does not exist\n")
                 interface.execution_note_box.configure(state="disabled")
-
-
-        # Give reason for execution
-
-    def print_inventory(self, inventory_name, inventories):
-        name = inventory_name
-        self.inventory_box.configure(state="normal")
-        for key,value in inventories.items():
-            print(key, value)
-            # self.inventory_box.insert(tk.END, key + ":" + value)
-        self.inventory_box.configure(state="disabled")
 
 # =======================================================================================================================
 
+'''
 def fetch_inventory_name(purpose):
     root = tk.Tk()
     # Make storage area for inventory name
@@ -335,15 +383,39 @@ def fetch_inventory_name(purpose):
     submit_button = tk.Button(root, text = "Submit", command = lambda:submit_inventory_name(inventory_name, name_entry, inv_name, root, purpose=purpose), justify="center")
     submit_button.pack(expand=True)
 
+'''
+
+def fetch_inventory():
+    inventories_name=interface.inventories_name_entry.get()
+    interface.inventories_name_entry_string.set("")
+    print('The inventory is'+inventories_name)
+    return inventories_name
+
+def fetch_item():
+    inventory_name=interface.inventory_name_entry.get()
+    item_name=interface.item_name_entry.get()
+    quantity=interface.quantity_entry.get()
+    try:
+        quantity = int(quantity)
+    except ValueError: 
+        interface.execution_note_box.configure(state="normal")
+        interface.execution_note_box.insert(tk.END, "\nFAIL:Quantity type not valid\n")
+        interface.execution_note_box.configure(state="disabled")
+    interface.inv_name.set("")
+    interface.itm_name.set("")
+    interface.enter_quantity.set("")
+    return [inventory_name, item_name, quantity]
+
 # ======================================================================================================
-    
+
+'''
 def submit_inventory_name(inventory_name, name_entry, inv_name, root, purpose):
     inventory_name=name_entry.get()
     inv_name.set("")
     print("The name is: " + inventory_name)
     root.destroy()
     # inventory_name = input("Inventory name: ").strip()
-    inventory_flag = validate_inventory_name(inventory_name, inventories) # Returns 0 if name doesnt exists and 1 if name does exist
+    inventory_flag = validate_inventory(inventory_name, inventories) # Returns 0 if name doesnt exists and 1 if name does exist
     if purpose == 'add':
         manager.add_inventory(inventories, inventory_name, inventory_flag)
     elif purpose == 'remove':
@@ -351,6 +423,8 @@ def submit_inventory_name(inventory_name, name_entry, inv_name, root, purpose):
     elif purpose == 'display':
         manager.display_inventory(inventories, inventory_name, inventory_flag)
     return inventory_name
+
+'''
 
 # ======================================================================================================
     
@@ -371,9 +445,12 @@ def fetch_item_name(purpose):
     bold_font = font.Font(weight="bold", size=13, font="Helvetica")
 
     # Add label for purpose of asking for name (i.e. is it to add/remove/display inventory)
-    purpose_label = tk.Label(root, text="Enter name of inventory to " + purpose, font=bold_font, justify="center")
+    purpose_label = tk.Label(root, text="Enter name of item to " + purpose, font=bold_font, justify="center")
     purpose_label.grid(row=0, column=0, columnspan=2, pady=5)
     # self.purpose_label.grid(row=0,column=0,pady=3)
+
+    # Add label for inventory name entry
+    inventory_name_label = ''
 
     # Add label for item name entry
     item_name_label = tk.Label(root, text="Item name:", justify="right")
