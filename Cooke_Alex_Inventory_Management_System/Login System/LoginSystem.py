@@ -1,10 +1,13 @@
 from tkinter import *
 import sqlite3
+import app
+import config 
 
 #create an object to create a window
 window = Tk()
 
 #Actions on Pressing Login Button
+
 def login():
     def login_database():
         conn = sqlite3.connect("1.db")
@@ -16,8 +19,15 @@ def login():
         if row!=[]:
             user_name=row[0][1]
             l3.config(text="user name found with name: "+user_name)
+            config.result = True
+            try:
+                login_window.destroy()
+            except:
+                pass
+            app.grant_access()
         else:
             l3.config(text="user not found")
+            config.result = False
 
     window.destroy()  #closes the previous window
     login_window = Tk() #creates a new window for loging in
