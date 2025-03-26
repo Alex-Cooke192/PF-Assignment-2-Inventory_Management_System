@@ -1,0 +1,234 @@
+# INV MGT SYS NO GUI
+# 20.02.2025
+
+# Inventory Management System
+# 12.02.2025
+
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import ttk
+from tkinter import PhotoImage
+from tkinter import messagebox
+import json
+import time
+
+with open("inventoryFile.txt", "w") as file:
+    file.write('text')
+
+class Asset: 
+    def __init__(self, asset_id, name, quantity, value):
+        self.asset_id = asset_id
+        self.name = name
+        self.quantity = quantity
+        self.value = value
+        
+    def edit_quantity(self, new_quantity):
+        self.quantity = new_quantity
+        print('Object', self.name, 'quantity changed to', self.quantity)
+    
+    def edit_value(self, new_value):
+        self.value = new_value
+        print('Object', self.name, 'value changed to', new_value)
+
+
+class inventory_manager(): 
+    def __init__(self, inventory_name):
+        self.name = inventory_name
+        self.inventory = {}
+        print(inventory_name, 'contains\n', self.inventory)
+
+    def add_asset(self, inventory_name, asset):
+        self.inventory.append(asset)
+
+    def remove_asset(self, asset):
+        self.inventory.remove(asset)
+
+
+class inventories_manager: 
+    def __init__(self):
+        self.counter = 0 # tracks how many inventories are active in the dictionary
+        self.new_inventory_ID = 0
+    
+    def add_inventory(self, inventories):
+        self.new_inventory_ID += 1
+        self.counter += 1
+        flag = 1
+        while flag == 1:
+            inventory_name = input("Inventory name: ").strip()
+            flag = validate_inventory_name(inventory_name, inventories)
+        inventories[inventory_name] = {}
+        print('Inventory successfully added')
+
+    def delete_inventory(self, inventories):
+        if len(inventories) == 0:
+            print('Cannot delete inventory - no inventories exist!') 
+            return 0
+        flag = 0
+        while flag == 0:
+            inventory_name = input('Enter inventory name: ')
+            flag = validate_inventory_name(inventory_name, inventories)
+        del inventories[inventory_name] # Remove inventory from data
+        print('Inventory successfully removed')
+        self.counter -= 1
+
+    def display_inventory(self, inventories):
+        # Check if any inventories actually do exist 
+        if len(inventories) == 0:
+            print('Cannot display inventory - no inventories exist!') 
+            return 0
+        inventory_name = input('Enter name of inventory to display: ').strip()
+        # Verify name exists
+        search = False # False as the inventory hasnt been found
+        while search == False: 
+            search = True
+            try: 
+                print(inventory_name, ": ", inventories[inventory_name])
+            except KeyError:
+                search = False
+                print("Inventory does not exist, enter new name")
+                print("Enter \'Stop\' if you no longer want to display an inventory")
+                inventory_name = input('Enter name of inventory to display:').strip()
+                if inventory_name == 'Stop' or inventory_name == 'stop': 
+                    search = True
+                    return 0
+
+    def add_item(self, inventory_name, inventories):
+        # Adds new item to a given inventory
+        new_item_name = input('Enter name of item to add: ').strip()
+        quantity = int(input('Enter quantity of item: '))
+        # Check if item already exists
+        for key in inventories[inventory_name]:
+            if key == new_item_name:
+                # Item already exists in that inventory
+                print('Item already exists in that inventory, edit quantity instead?')
+
+        inventories[inventory_name][new_item_name] = quantity 
+        print(inventories)
+    
+    def remove_item(self, inventory_name, inventories):
+        # This function removes an item from a given inventory
+        # Get item name & verify it exists in the given inventory
+        item_flag = False 
+        while item_flag == False:
+            item_name = input('Enter name of item to remove: ').strip()
+            for key in inventories[inventory_name]:
+                if key == item_name:
+                    # Item exists in that inventory
+                    item_flag = True
+            if item_flag == False:
+                # Item not present in inventory
+                print('Item not present')
+        del inventories[inventory_name][item_name]
+        print(inventories)
+
+    def edit_quantity(self, inventory_name, inventories):
+        # Validate item exists in inventory
+
+
+        inventories[inventory_name][new_item_name] = quantity 
+
+                
+manager = inventories_manager()
+inventories = {'office 1': {'apple': '3', 'banana': '2'}}
+with open('inventoryfile.txt', 'w') as f:
+    f.write(json.dumps(inventories))
+
+def validate_inventory_name(inventory_name, inventories):
+    # Function checks the 'inventories' dictionary to see if the dicntionary exists
+    # If function returns true, name already exists, 
+    # if it returns false, name doesnt exist
+    name_check = False 
+    for key, value in inventories.items():
+        if key == inventory_name:
+            name_check = True 
+    if name_check == False:
+        # Name doesnt exist
+        print('Name doesnt exist')
+        return 0
+    elif name_check == True:
+        # Name does exist
+        print('Name does exist')
+        return 1
+
+def menu():
+    print('Inventory Management System: Ver 0.1')
+    print('1. Create inventory')
+    print('2. Display inventory')
+    print('3. Edit inventory')
+    print('4. Enter function here')
+    print('5. Delete inventory')
+    print('6. Display all inventories')
+    print('7. Exit System')
+       
+def main():
+    with open('inventoryfile.txt', 'r') as f:
+        data = f.read()
+        print(data)
+    inventories = json.loads(data)
+    # Immediately create the manager
+    ########## manager = inventories_manager()
+    ########## inventories = {}
+    menu()
+    command = False
+    while command == False:
+        check_flag = False 
+        while check_flag == False:
+            # Data validation to check the option entered is valid 
+            check_flag = True
+            try:
+                option = int(input('Enter option num:'))
+            except ValueError:
+                check_flag = False 
+                print('Data not of valid type, enter again.')
+            # if option != 1 and option != 2 and option != 3 and option != 4 and option != 5 and option != 6 and option != 7:
+            if option < 1 and option > 7: 
+                check_flag = False
+                print('Number given is not an option, enter again')
+        if option == 1:
+            # Create inventory
+            manager.add_inventory(inventories)
+        elif option == 2: 
+            # Display inventory
+            manager.display_inventory(inventories)
+        elif option == 3:
+            # edit inventory 
+            print('Available inventories:')
+            for key in inventories:
+                print(key)
+            name_flag = 0 # Flag used to validate name exists 
+            while name_flag == 0:
+                inventory_name = input("Enter name of inventory to edit: ")
+                name_flag = validate_inventory_name(inventory_name, inventories)
+            print('1.Add item to inventory')
+            print('2.Remove item from inventory')
+            print('3.Return to main menu')
+            option_flag = False 
+            while option_flag == False:
+                # Need to validate edit_option value
+                edit_option = int(input('Enter option: '))
+                if edit_option == 1:
+                    manager.add_item(inventory_name, inventories)
+                elif edit_option == 2:
+                    manager.remove_item(inventory_name, inventories)
+                elif option == 3:
+                    # Return to main menu
+                    option_flag = True
+                    menu()
+        elif option == 4:
+            pass 
+        elif option == 5:
+            # Delete inventory
+            manager.delete_inventory(inventories)
+        elif option == 6:
+            # Display all inventories
+            for name, inventory in inventories.items():
+                print("\ninventory:", name)
+                for key in inventory:
+                    print(key + ':', inventory[key])
+        elif option == 7:
+            # Exit inventory
+            command = True
+            # Write dictionary to file
+            with open('inventoryfile.txt', 'w') as f: 
+                f.write(json.dumps(inventories))
+main()
