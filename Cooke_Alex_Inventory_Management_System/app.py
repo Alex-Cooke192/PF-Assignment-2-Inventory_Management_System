@@ -18,7 +18,7 @@ import config
 
 directory = os.getcwd()
 login_path = (f'{directory}/Login_System')
-print(login_path)
+# print(login_path)
 sys.path.insert(0, login_path)
 
 import LoginSystem
@@ -37,3 +37,5 @@ def grant_access():
         pass
     print(config.inventories)
     interface.mainloop() 
+
+
