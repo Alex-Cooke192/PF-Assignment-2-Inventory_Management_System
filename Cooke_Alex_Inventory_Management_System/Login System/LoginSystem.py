@@ -22,14 +22,19 @@ def login():
             config.result = True
             try:
                 login_window.destroy()
+                window.destroy()
             except:
                 pass
             app.grant_access()
         else:
             l3.config(text="user not found")
             config.result = False
-
-    window.destroy()  #closes the previous window
+    def change_to_signup():
+        try:
+            login_window.destroy()
+        except:
+            pass
+        signup()
     login_window = Tk() #creates a new window for loging in
     login_window.title("LogIn")  #set title to the window
     login_window.geometry("400x250")  #set dimensions to the window
@@ -56,6 +61,9 @@ def login():
     b = Button(login_window,text="login",width=20,command=login_database)
     b.grid(row=4,column=1)
 
+    b2 = Button(login_window, text="Change to Signup", width=20,command=change_to_signup)
+    b2.grid(row=5,column=1)
+
     login_window.mainloop()
 
 #Actions on Pressing Signup button
@@ -74,8 +82,20 @@ def signup():
         
         conn.commit()  #save the changes 
         conn.close() #close the connection
-
-    window.destroy()  #closes the previous window
+    def change_to_login():
+        try:
+            signup_window.destroy()
+        except:
+            pass
+        login()
+    try: 
+        window.destroy()  #closes the previous window
+    except:
+        pass
+    try:
+        login_window.destroy()
+    except:
+        pass
     signup_window = Tk() #creates a new window for signup process
     signup_window.geometry("400x250") #dimensions for new window
     signup_window.title("Sign Up") #title for the window
@@ -106,6 +126,9 @@ def signup():
     b1 = Button(signup_window,text="signup",width=20,command=signup_database)
     b1.grid(row=4,column=2)
 
+    b2 = Button(signup_window, text="Change to Login", width=20,command=change_to_login)
+    b2.grid(row=5,column=2)
+
     signup_window.mainloop()
 
 #main window code and driver code
@@ -124,3 +147,4 @@ button2 = Button(window,text="Signup",width=20,command=signup)
 button2.grid(row=2,column=3)
 #calling mainloop method which is used when your application is ready to run and it tells the code to keep displaying
 window.mainloop()
+
