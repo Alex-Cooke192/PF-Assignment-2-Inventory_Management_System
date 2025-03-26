@@ -55,6 +55,7 @@ class inventories_manager:
         flag = 1
         while flag == 1:
             inventory_name = input("Inventory name: ").strip()
+            flag = validate_inventory_name(inventory_name, inventories)
         inventories[inventory_name] = {}
         print('Inventory successfully added')
 
@@ -94,7 +95,25 @@ class inventories_manager:
     def add_item(self, inventory_name, inventories):
         # Adds new item to a given inventory
         new_item_name = input('Enter name of item to add: ').strip()
-        quantity = int(input('Enter quantity of item: '))
+        quanflag = False
+        while quanflag = False:
+            quanflag = True
+            try:
+                quantity = int(input('Enter quantity of item: '))
+            except ValueError:
+                quanflag = False
+                print("Data not of valid type, enter again
+                
+        digicount = 0
+        charcount = 0
+        for char in new_item_name:
+            if char.isdigit():
+                digicount += 1
+            elif char.ischar():
+                charcount += 1
+        if digicount > 0 and charcount == 0: # Item name only contains numbers so is invalid 
+            return False 
+    
         # Check if item already exists
         for key in inventories[inventory_name]:
             if key == new_item_name:
@@ -222,7 +241,7 @@ def main():
             # Display all inventories
             for name, inventory in inventories.items():
                 print("\ninventory:", name)
-                for items in inventory:
+                for key in inventory:
                     print(key + ':', inventory[key])
         elif option == 7:
             # Exit inventory
