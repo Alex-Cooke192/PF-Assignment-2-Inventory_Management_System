@@ -15,13 +15,7 @@ from admin_manager import admin
 from file_manager import file_object
 from inventories_manager import inventories_manager
 import config
-
-directory = os.getcwd()
-login_path = (f'{directory}/Login_System')
-# print(login_path)
-sys.path.insert(0, login_path)
-
-import LoginSystem
+from Login_System.LoginSystem import *
 
 def grant_access():
     # Create objects & relevant pathways between objects
@@ -35,6 +29,9 @@ def grant_access():
         config.inventories = file_manager.file_read_inventories(config.inventories)
     except UnboundLocalError:
         pass
+    print(config.inventories)
+    interface.mainloop() 
+
     print(config.inventories)
     interface.mainloop() 
 
